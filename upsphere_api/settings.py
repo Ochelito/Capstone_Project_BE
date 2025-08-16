@@ -47,8 +47,14 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        #JWT
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        #OAuth2
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+
+        #session and basic for browsable API
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.OAuth2Authentication',
+        'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
