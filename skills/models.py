@@ -27,14 +27,14 @@ class Skill(models.Model):
         unique_together = ('name', 'category') #ensure unique skill names within a category
         indexes=[
             models.Index(fields=['name']),
-            models.indexes(fields=['slug']),
+            models.Index(fields=['slug']),
         ]
         ordering = ['name']
 
     def save(self, *args, **kwargs):
         if not self.slug:
             base=f"{self.category.name}-{self.name}"
-            self.slug = slugify(self.name)[:200]  # Ensure slug is not too long
+            self.slug = slugify(base)[:200]  # Ensure slug is not too long
         super().save(*args, **kwargs)
 
     def __str__(self):

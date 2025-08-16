@@ -10,32 +10,32 @@ class Booking(models.Model):
         CANCELLED = 'CANCELLED', 'Cancelled'
         COMPLETED = 'COMPLETED', 'Completed'
 
-        lessons = models.ForeignKey(
-            'lessons.Lesson',
-            on_delete=models.PROTECT,
-            related_name='bookings',
-        )
+    lessons = models.ForeignKey(
+        'lessons.Lesson',
+        on_delete=models.PROTECT,
+        related_name='bookings',
+    )
 
-        learner = models.ForeignKey(
-            settings.AUTH_USER_MODEL,
-            on_delete=models.CASCADE,
-            related_name='bookings',
-            limit_choices_to={'role__in':['LEARNER', 'BOTH']},
-        )
+    learner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='bookings',
+        limit_choices_to={'role__in':['LEARNER', 'BOTH']},
+    )
 
-        scheduled_start = models.DateTimeField()
-        scheduled_end = models.DateTimeField()
+    scheduled_start = models.DateTimeField()
+    scheduled_end = models.DateTimeField()
 
-        #snapshots of the booking for later price changes 
-        price_snapshot = models.DecimalField(
-            max_digits=10,
-            decimal_places=2
-        )
+    #snapshots of the booking for later price changes 
+    price_snapshot = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
 
-        currency = models.CharField(
-            max_length=3,
-            default='NGN',
-        )
+    currency = models.CharField(
+        max_length=3,
+        default='NGN',
+    )
     status = models.CharField(
         max_length=10,
         choices=Status.choices,
@@ -48,7 +48,7 @@ class Booking(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['lesson', 'scheduled_start']),
+            models.Index(fields=['lessons', 'scheduled_start']),
             models.Index(fields=['learner', 'status']),
         ]
         ordering = ['scheduled_start']

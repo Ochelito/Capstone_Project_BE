@@ -4,14 +4,15 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
-class User(AbstractUser):
-    class Role(models.TextChoices):
+class Role(models.TextChoices):
         LEARNER = 'LEARNER', _('Learner')
         MENTOR = 'MENTOR', _('Mentor')
         BOTH = 'both', _('Both')
-    
+
+class User(AbstractUser):
+
     role = models.CharField(
-        max_length=10,
+        max_length=20,
         choices=Role.choices,
         default=Role.LEARNER,
         help_text=_('Designates whether the user is a learner, mentor, or both.'),
