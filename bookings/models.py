@@ -1,6 +1,9 @@
 from django.db import models
-from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.exceptions import ValidationError
+from users.models import User, Role
+from django.utils import timezone
 
 # Create your models here.
 class Booking(models.Model):
@@ -17,7 +20,7 @@ class Booking(models.Model):
     )
 
     learner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name='bookings',
         limit_choices_to={'role__in':['LEARNER', 'BOTH']},
@@ -25,6 +28,7 @@ class Booking(models.Model):
 
     scheduled_start = models.DateTimeField()
     scheduled_end = models.DateTimeField()
+    booked_at = models.DateTimeField(default=timezone.now)
 
     #snapshots of the booking for later price changes 
     price_snapshot = models.DecimalField(
@@ -42,6 +46,15 @@ class Booking(models.Model):
         default=Status.PENDING,
     )
 
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        default=ContentType.objects.get(app_label='lessons', model='lesson').pk,
+        help_text='Content type of the booking, e.g., lesson.'
+    )
+    object_id = models.PositiveIntegerField(default=1, help_text='ID of the object being booked, e.g., lesson ID.')
+    content_object = GenericForeignKey('content_type', 'object_id')
+
     notes = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
@@ -51,7 +64,7 @@ class Booking(models.Model):
             models.Index(fields=['lessons', 'scheduled_start']),
             models.Index(fields=['learner', 'status']),
         ]
-        ordering = ['scheduled_start']
+        ordering = ['-scheduled_start']
 
     def clean(self):
         # Ensure that the booking's scheduled times are valid
