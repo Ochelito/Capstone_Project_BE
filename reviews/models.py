@@ -10,6 +10,7 @@ class Review(models.Model):
     learner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        null=True, blank=True, 
         related_name='reviews',
         limit_choices_to={'role': Role.LEARNER},
         help_text='The learner who wrote the review.'
@@ -19,6 +20,8 @@ class Review(models.Model):
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE,
+        null=True, blank=True,
+        related_name='reviews',    
     )
     object_id = models.PositiveIntegerField(default=0)
     content_object = GenericForeignKey('content_type', 'object_id')
