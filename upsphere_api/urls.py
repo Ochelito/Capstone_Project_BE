@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-    TokenRefreshView
+    TokenRefreshView,
+    TokenBlacklistView,
 )
 
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
     #JWT endpoints
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
 
    # Include the API URLs for each app
     path('api/bookings/', include(('bookings.urls', 'bookings'), namespace='bookings')),  # Assuming you have a bookings app for booking management
