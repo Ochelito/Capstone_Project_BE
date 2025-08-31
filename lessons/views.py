@@ -12,5 +12,4 @@ class LessonViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         #mentor creates lesson under their own skill
-        serializer.save()
-        
+        serializer.save(skill__mentor=self.request.user)

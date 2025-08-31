@@ -44,12 +44,8 @@ class Lesson(models.Model):
         ordering = ['order']
 
     def clean(self):
-        #Ensure that the mentor has the skill they are teaching
-        mentor_skills = getattr(self.mentor, "mentor_skill_id", None)
-        if mentor_skills is None:
-            raise ValidationError('Mentor does not have mentor_skill_set.')
-        if mentor_skills != self.skill_id:
-            raise ValidationError('Mentor must have the skill they are teaching.')
+        if self.skill.mentor != self.mentor:
+            raise ValidationError("A lesson can only be created by the mentor who owns this skill.")
         
 
     def __str__(self):
