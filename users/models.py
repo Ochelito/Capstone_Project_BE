@@ -3,14 +3,16 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
-# Create your models here.
+# Define possible roles for users
 class Role(models.TextChoices):
-        LEARNER = 'LEARNER', _('Learner')
-        MENTOR = 'MENTOR', _('Mentor')
-        BOTH = 'both', _('Both')
+    LEARNER = 'LEARNER', _('Learner')  # Standard learner
+    MENTOR = 'MENTOR', _('Mentor')    # Standard mentor
+    BOTH = 'both', _('Both')           # Can act as both learner and mentor
 
+# Custom User model extending Django's AbstractUser
 class User(AbstractUser):
 
+    # User role: determines if user is a learner, mentor, or both
     role = models.CharField(
         max_length=20,
         choices=Role.choices,
@@ -18,18 +20,18 @@ class User(AbstractUser):
         help_text=_('Designates whether the user is a learner, mentor, or both.'),
     )
 
-    #if user is a mentor or both, they must have exactly a skill they teach
-    #multiple mentors can teach the same skill(many mentors to one skill)
+    # Skill taught by the mentor (required for MENTOR/BOTH)
+    # Many mentors can teach the same skill
     mentor_skill = models.ForeignKey(
         'skills.Skill',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='mentors',
-        help_text=_('The skill that the mentor teaches(required for MENTOR/BOTH).'),
+        help_text=_('The skill that the mentor teaches (required for MENTOR/BOTH).'),
     )
 
-    #Learners can have multiple skills they want to learn(many learners to many skills)
+    # Skills that a learner wants to learn or has acquired (many-to-many)
     learner_skills = models.ManyToManyField(
         'skills.Skill',
         blank=True,
@@ -37,15 +39,20 @@ class User(AbstractUser):
         help_text=_('The skills that the learner wants to learn or has acquired.'),
     )
 
+    # Optional user biography
     bio = models.TextField(
         blank=True,
         default='',
     )
+
+    # Optional profile picture
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
         null=True,
         blank=True,
     )
+
+    # Optional location string
     location = models.CharField(
         max_length=255,
         blank=True,
@@ -54,9 +61,9 @@ class User(AbstractUser):
 
     class Meta:
         constraints = [
-            #for role MENTOR or BOTH, mentor_skill must be set
-            # for role LEARNER, mentor_skill must be null
-
+            # Enforce consistency:
+            # - Mentors or BOTH roles must have a mentor_skill assigned
+            # - Learners cannot have a mentor_skill assigned
             models.CheckConstraint(
                 name='mentor_skill_required_for_mentor',
                 check=(
@@ -67,4 +74,5 @@ class User(AbstractUser):
         ]
 
     def __str__(self):
+        # Display username as string representation
         return self.username

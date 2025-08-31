@@ -4,17 +4,20 @@ from .serializers import BookingSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsLearnerForBookings, IsBookingOwnerOrReadOnly
 
-
-# Create your views here.
+# ViewSet for the Booking model
+# Handles CRUD operations: list, retrieve, create, update, delete
 class BookingViewSet(viewsets.ModelViewSet):
-    queryset = Booking.objects.all()
-    serializer_class = BookingSerializer
+    queryset = Booking.objects.all()              # Base queryset for this viewset
+    serializer_class = BookingSerializer          # Serializer to convert model instances to JSON
 
+    # Define custom permissions based on action
     def get_permissions(self):
         if self.action in ['create']:
+            # Only authenticated learners can create bookings
             return [IsAuthenticated(), IsLearnerForBookings()]
-        return[IsAuthenticated(), IsBookingOwnerOrReadOnly()]
-    
+        # For other actions (retrieve, update, delete), enforce ownership or read-only
+        return [IsAuthenticated(), IsBookingOwnerOrReadOnly()]
+
+    # Automatically assign the logged-in user as the learner when creating a booking
     def perform_create(self, serializer):
-        serializer.save(learner=self.request.user) #logged-in learner auto-assigned
-        
+        serializer.save(learner=self.request.user)
