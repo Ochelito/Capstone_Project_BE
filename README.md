@@ -1,10 +1,10 @@
 # Capstone_Project_BE
 Final Backend Web Development Project. Compulsory for graduation
 
-#SkillShare Marketplace API
+# SkillShare Marketplace API
 This repository contains the backend API for a SkillShare Marketplace application where local community users can learn practical skills from experts. The backend is built with Django and Django REST Framework, using MySQL as the database.
 
-#Table of Contents
+# Table of Contents
 Project Overview
 Features
 Technology Stack
@@ -18,13 +18,13 @@ Postman Setup
 Contributing
 License
 
-#Project Overview
+# Project Overview
 The SkillShare Marketplace API allows: 
 - Mentors to register and offer lessons on their skills.
 - Learners to browse skills, book lessons, and leave reviews.
 - Admins to manage users, skills, lessons, bookings, and reviews.
 
-#Features
+# Features
 -User roles: Mentor, Learner, or Both
 -JWT authentication and optional OAuth (Google, Facebook, etc.)
 -Skill management by mentors
@@ -33,7 +33,7 @@ The SkillShare Marketplace API allows:
 -Review system for lessons
 -Permission system ensuring only authorized actions
 
-#Technology Stack
+# Technology Stack
 -Python 3.11
 -Django 5.x
 -Django REST Framework
@@ -41,7 +41,7 @@ The SkillShare Marketplace API allows:
 -Postman for API testing
 -JWT for authentication
 
-#API Endpoints
+# API Endpoints
 Endpoint Method Description
 /api/users/register/ POST Register a new user
 /api/auth/login/ POST Obtain JWT token
@@ -53,11 +53,11 @@ Endpoint Method Description
 Note: All endpoints requiring authentication must include Authorization: Bearer
 <access_token> header.
 
-#Authentication
+# Authentication
 JWT Authentication is implemented using rest_framework_simplejwt .
 Obtain a token via /api/auth/login/ , then pass in Authorization header.
 
-#Postman Setup
+# Postman Setup
 -Create an environment SkillShareAPI .
 -Define variables: base_url , access_token , mentor_id , skill_id , lesson_id ,
 booking_id , review_id .
